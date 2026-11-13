@@ -1,0 +1,20 @@
+{
+ "w": 1920, "h": 1080, "seed": 20261026,
+ "light": {"azimuth": 262, "elevation": 8, "kelvin": 2600,
+           "intensity": 1.25, "ambient": 0.26, "haze": 0.46},
+ "ops": [
+  {"type": "sky", "top": "#17324f", "bottom": "#f2b46a", "horizon": 0.70},
+  {"type": "sun", "x": 0.26, "y": 0.60, "r": 0.055, "color": "#ffe1a8", "glow": 4.4},
+  {"type": "haze", "y": 0.645, "height": 0.18, "color": "#f7c88e", "opacity": 0.42},
+  {"type": "skyline", "horizon": 0.70, "depth": 4, "base_color": "#3a4553",
+   "window_p": 0.18, "height_range": [0.06, 0.26], "crowd": 0.95, "seed": 29},
+  {"type": "landmark", "x": 0.72, "horizon": 0.70, "h": 0.44, "w": 0.028,
+   "color": "#2a3340", "antenna": 0.05, "floors": 30},
+  {"type": "haze", "y": 0.695, "height": 0.08, "color": "#f0b878", "opacity": 0.34},
+  {"type": "ground", "y": 0.705, "color": "#171c22", "seed": 7},
+  {"type": "trees", "y": 0.92, "count": 13, "size": [0.06, 0.14], "color": "#0b1013", "seed": 31},
+  {"type": "railing", "y": 0.96, "color": "#a8a49c", "gap": 0.055, "height": 0.11, "opacity": 0.40},
+  {"type": "vignette", "strength": 0.32},
+  {"type": "grain", "amount": 0.05, "scale": 1.0, "seed": 3}
+ ]
+}

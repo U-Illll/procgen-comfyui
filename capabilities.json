@@ -1,0 +1,280 @@
+{
+  "_doc": "能力注册表（13-管线接线计划 §3.3）。status=active 必须有 consumer 且 pipeline 有调用点；rejected 必须带证据，pipeline 中出现非零启用即 fail；todo 必须有 since 与判据。",
+  "capabilities": [
+    {
+      "id": "mat.tile_grad",
+      "status": "active",
+      "producer": "procgen2.py:_mat_tile_px",
+      "consumer": "pipeline:build",
+      "default": true,
+      "since": "P0",
+      "evidence": "12 §5.2；midtone +0.5%"
+    },
+    {
+      "id": "mat.albedo_fit",
+      "status": "active",
+      "producer": "matpick.py:score_material",
+      "consumer": "pipeline:build",
+      "default": true,
+      "since": "P0",
+      "evidence": "11 §7.4 albedo 0.15：rd −2.1%"
+    },
+    {
+      "id": "zbuf.depth",
+      "status": "active",
+      "producer": "zbuf.py",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "C1；covered_bins=31 PASS，649 ms"
+    },
+    {
+      "id": "zbuf.normal",
+      "status": "todo",
+      "producer": "zbuf.py",
+      "consumer": null,
+      "default": false,
+      "since": "P1",
+      "evidence": "C1 产物已落盘；apply_ao 不消费，P1 作为逐像素光照输入"
+    },
+    {
+      "id": "zbuf.ao",
+      "status": "active",
+      "producer": "zbuf.py",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "11 §7.1 AO 是唯一 rd/盲测同向通道（AUC 0.589→0.574）"
+    },
+    {
+      "id": "zbuf.contact",
+      "status": "active",
+      "producer": "zbuf.py",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "11 §7.1 接触阴影盲测中性"
+    },
+    {
+      "id": "zbuf.seg",
+      "status": "active",
+      "producer": "zbuf.py",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "与 procgen2 seg 通道对齐，供语义轨"
+    },
+    {
+      "id": "shade.ao",
+      "status": "active",
+      "producer": "apply_ao.py:composite",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "11 §7.1"
+    },
+    {
+      "id": "shade.contact",
+      "status": "active",
+      "producer": "apply_ao.py:composite",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "11 §7.1"
+    },
+    {
+      "id": "shade.haze_pp",
+      "status": "active",
+      "producer": "apply_ao.py:composite",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "E2：std_far/near −15~−23%；盲测 0.571→0.561 不显著"
+    },
+    {
+      "id": "shade.godray",
+      "status": "active",
+      "producer": "apply_ao.py:composite",
+      "consumer": "pipeline:shade",
+      "default": true,
+      "since": "P0",
+      "evidence": "2026-10-26 强制默认 0.065（A/B：AUC 0.678→0.679，+0.001）；power 3.0/radius 0.55 抑制平化"
+    },
+    {
+      "id": "gen.controlnet_depth",
+      "status": "active",
+      "producer": "comfy_render.py:build",
+      "consumer": "pipeline:gen",
+      "default": true,
+      "since": "P0",
+      "evidence": "08 §11"
+    },
+    {
+      "id": "gen.controlnet_lineart",
+      "status": "active",
+      "producer": "comfy_render.py:build",
+      "consumer": "pipeline:gen",
+      "default": true,
+      "since": "P0",
+      "evidence": "08 §11"
+    },
+    {
+      "id": "gen.upscale",
+      "status": "active",
+      "producer": "comfy_render.py:build",
+      "consumer": "pipeline:gen",
+      "default": true,
+      "since": "P0",
+      "evidence": "RealESRGAN_x4"
+    },
+    {
+      "id": "camera.meta",
+      "status": "active",
+      "producer": "procgen2.py:self.camera",
+      "consumer": "pipeline:run",
+      "default": true,
+      "since": "P0",
+      "evidence": "P0-6 只登记；P3 由 build_layers 消费"
+    },
+    {
+      "id": "imaging.degrade",
+      "status": "active",
+      "producer": "degrade.py",
+      "consumer": "pipeline:degrade",
+      "default": true,
+      "since": "P0",
+      "evidence": "08 §2 补回 40% 统计差距"
+    },
+    {
+      "id": "mat.normal_light",
+      "status": "todo",
+      "producer": "shade_raster.py:main",
+      "consumer": null,
+      "default": false,
+      "since": "P1-3",
+      "evidence": "replace 模式已能用（N·L+GGX），但默认 overlay 不消费；需先解决“重绘丢失窗格”"
+    },
+    {
+      "id": "mat.albedo_overlay",
+      "status": "active",
+      "producer": "shade_raster.py:main",
+      "consumer": "pipeline:raster",
+      "default": true,
+      "since": "P1",
+      "evidence": "P1 实测：midtone 0.0674→0.0750（+11%）、峰度 25.26→27.66、窗户保留"
+    },
+    {
+      "id": "mat.roughness_ggx",
+      "status": "active",
+      "producer": "shade_raster.py:main",
+      "consumer": "pipeline:raster",
+      "default": true,
+      "since": "P1",
+      "evidence": "roughness→高光宽度（overlay 的 spec 项）；unique_color 未变（材质平铺不补色彩）"
+    },
+    {
+      "id": "mat.parallax_occlusion",
+      "status": "todo",
+      "producer": "materials/*/displacement_1024.jpg",
+      "consumer": null,
+      "default": false,
+      "since": "P1",
+      "evidence": "近景立面 2-4 px 凹凸"
+    },
+    {
+      "id": "geom.props",
+      "status": "todo",
+      "producer": "elements.jsonl",
+      "consumer": null,
+      "default": false,
+      "since": "P2",
+      "evidence": "判据 local_contrast_cv ≤1.2（当前 1.92）"
+    },
+    {
+      "id": "layers.parallax",
+      "status": "todo",
+      "producer": "procgen2.py:build_layers",
+      "consumer": null,
+      "default": false,
+      "since": "P3",
+      "evidence": "运镜序列无空洞"
+    },
+    {
+      "id": "layers.dof",
+      "status": "todo",
+      "producer": "procgen2.py:Scene.camera.fstop",
+      "consumer": null,
+      "default": false,
+      "since": "P3",
+      "evidence": "f/2.8 vs f/11 可测差异"
+    },
+    {
+      "id": "layers.motion_blur",
+      "status": "todo",
+      "producer": "build_layers",
+      "consumer": null,
+      "default": false,
+      "since": "P3",
+      "evidence": "转场不闪"
+    },
+    {
+      "id": "blender.cycles",
+      "status": "todo",
+      "producer": "procgen2.py:to_blender_py",
+      "consumer": null,
+      "default": false,
+      "since": "P3+",
+      "evidence": "需真几何；当前只渲纸片（05 §11.1）"
+    },
+    {
+      "id": "shade.wet",
+      "status": "rejected",
+      "producer": "apply_ao.py:fake_ssr",
+      "consumer": null,
+      "default": false,
+      "since": "C2.1",
+      "evidence": "11 §7.1：rd −6.0% 但盲测 AUC 0.589→0.639",
+      "forbid_pattern": "--wet\\s+([0-9]*\\.?[0-9]+)"
+    },
+    {
+      "id": "geom.ground_perspective",
+      "status": "rejected",
+      "producer": "procgen2.py:ground",
+      "consumer": null,
+      "default": false,
+      "since": "轮2",
+      "evidence": "11 §2.6：地面窄带→透视斜面 rd +0.5%",
+      "forbid_pattern": "--ground-perspective"
+    },
+    {
+      "id": "render.ssaa2x",
+      "status": "rejected",
+      "producer": "render_svg",
+      "consumer": null,
+      "default": false,
+      "since": "轮5",
+      "evidence": "13 §10：峰度 42.7→44.1、台阶 +17%",
+      "forbid_pattern": "force-device-scale-factor=([2-9])"
+    },
+    {
+      "id": "gen.cn_zbuf_depth",
+      "status": "rejected",
+      "producer": "zbuf.py:depth.png",
+      "consumer": null,
+      "default": false,
+      "since": "轮5",
+      "evidence": "13 §10：与 procgen2 depth 相关 0.984，替换无收益",
+      "forbid_pattern": "cn[_-]zbuf[_-]depth\\s*=\\s*(true|1)"
+    },
+    {
+      "id": "mat.res4k",
+      "status": "rejected",
+      "producer": "make_material_thumbs.py",
+      "consumer": null,
+      "default": false,
+      "since": "轮5",
+      "evidence": "12 §5.1：PSNR 52-53 dB，13 指标差 <0.3%",
+      "forbid_pattern": "--mat-res\\s+(4096|4k|8192)"
+    }
+  ]
+}

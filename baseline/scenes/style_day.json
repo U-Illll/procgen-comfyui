@@ -1,0 +1,8 @@
+{"w":1600,"h":900,"seed":7,"ops":[
+ {"type":"sky","top":"#7ec8f2","bottom":"#e8f6ff","horizon":0.68},
+ {"type":"sun","x":0.18,"y":0.22,"r":0.05,"color":"#fffbe8","glow":2.4},
+ {"type":"skyline","horizon":0.68,"depth":3,"base_color":"#4a6b82","window_p":0.12,"height_range":[0.08,0.34],"crowd":1.0,"seed":4},
+ {"type":"ground","y":0.682,"color":"#8fa6b4","seed":2},
+ {"type":"trees","y":0.90,"count":7,"size":[0.05,0.09],"color":"#3d6b4a","seed":8},
+ {"type":"grain","amount":0.03,"seed":3}
+]}
